@@ -1,13 +1,13 @@
 //Linked List implementation of stack
 
 class LinkedListStack {
-    Node top;
-    int numelt;
-    int size;
+    private Node top;
+    private int numelt;
+    private int size;
 
     private class Node {
         int key;
-        Node next;
+        Node next;  // references node before this
     }
 
     public static class EmptyStackException extends RuntimeException {
@@ -51,6 +51,7 @@ class LinkedListStack {
         return y;
     }
 }
+
 
 class TestLinkedListStack {
     public static void main(String[] args) {

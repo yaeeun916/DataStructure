@@ -1,12 +1,15 @@
-// Array implementation of Queue
-
 import java.util.Scanner;
 
-class ArrayQueue {
-    private int front;
-    private int rear;
+class LinkedListQueue {
+    private Node front;
+    private Node rear;
+    private int numelt;
     private int size;
-    private int[] que;
+
+    private class Node {
+        int key;
+        Node next;  // references node after this
+    }
 
     public static class EmptyQueueException extends RuntimeException {
         public EmptyQueueException() {}
@@ -16,45 +19,62 @@ class ArrayQueue {
         public OverflowQueueException() {}
     }
 
-    public ArrayQueue(int n) {
-        // to store n elements, create array of n + 1 elements and always leave 1 slot empty
-        // so that empty queue and full queue can be distinguished
-        que = new int[n + 1];
-        size = n + 1;
-        front = rear = 0;
+    public LinkedListQueue(int n) {
+        front = null;
+        rear = null;
+        numelt = 0;
+        size = n;
     }
 
     public boolean isEmpty() {
-        return (front == rear);
+        return (numelt == 0);
     }
 
     public boolean isFull() {
-        return ((rear + 1) % size == front);
+        return (numelt == size);
     }
 
     public void enqueue(int x) throws OverflowQueueException {
         if (isFull())
             throw new OverflowQueueException();
-        rear = (rear + 1) % size;   // advance pointer first
-        que[rear] = x;              // then enqueue
+
+        numelt++;
+        Node newNode = new Node();
+        newNode.key = x;
+
+        if (front == null) {
+            front = rear = newNode;
+        } else {
+            rear.next = newNode;
+            rear = newNode;
+        }
     }
 
     public int dequeue() throws EmptyQueueException {
         if (isEmpty())
             throw new EmptyQueueException();
-        front = (front + 1) % size;     // advance pointer first
-        return que[front];              // then dequeue
+
+        numelt--;
+        int y = front.key;
+        front = front.next;
+
+        if (front == null) {
+            rear = null;
+        }
+
+        return y;
     }
 
-    public int peek() {
+    public int peek() throws EmptyQueueException {
         if (isEmpty())
             throw new EmptyQueueException();
-        return que[front + 1];
+
+        return (front.key);
     }
 
     public int getNumelt() {
-        return ((rear - front) % size + size) % size;
-    } // return number of stored elements
+        return numelt;
+    }
 
     public int getSize() {
         return size;
@@ -62,13 +82,13 @@ class ArrayQueue {
 }
 
 
-class TestArrayQueue {
+class TestLinkedListQueue {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        ArrayQueue queue = new ArrayQueue(10);
+        LinkedListQueue queue = new LinkedListQueue(10);
 
         while (true) {
-            System.out.printf("current number of elements : %d/%d\n", queue.getNumelt(), queue.getSize() - 1);
+            System.out.printf("current number of elements : %d/%d\n", queue.getNumelt(), queue.getSize());
             System.out.println("(1) enqueue  (2) dequeue  (3) peek  (0) exit");
             int menu;
             do {
@@ -84,7 +104,7 @@ class TestArrayQueue {
                     x = sc.nextInt();
                     try {
                         queue.enqueue(x);
-                    } catch (ArrayQueue.OverflowQueueException e) {
+                    } catch (LinkedListQueue.OverflowQueueException e) {
                         System.out.println("OVERFLOW");
                     }
                     System.out.println();
@@ -94,7 +114,7 @@ class TestArrayQueue {
                     try {
                         x = queue.dequeue();
                         System.out.println(x);
-                    } catch (ArrayQueue.EmptyQueueException e) {
+                    } catch (LinkedListQueue.EmptyQueueException e) {
                         System.out.println("EMPTY");
                     }
                     System.out.println();
@@ -104,7 +124,7 @@ class TestArrayQueue {
                     try {
                         x = queue.peek();
                         System.out.println(x);
-                    } catch (ArrayQueue.EmptyQueueException e) {
+                    } catch (LinkedListQueue.EmptyQueueException e) {
                         System.out.println("EMPTY");
                     }
                     System.out.println();
