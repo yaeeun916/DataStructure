@@ -47,7 +47,7 @@ class LinkedListStack {
             throw new EmptyStackException();
         int y = top.key;
         top = top.next;
-        numelt++;
+        numelt--;
         return y;
     }
 }
